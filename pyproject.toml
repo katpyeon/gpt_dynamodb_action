@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "gpt-dynamodb-action"
+version = "0.1.0"
+description = ""
+authors = ["yhchoe <bizinsightlab@gmail.com>"]
+readme = "README.md"
+packages = [{include = "gpt_dynamodb_action", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.12"
+uvicorn = {extras = ["standard"], version = "^0.34.2"}
+boto3 = "^1.38.0"
+python-dotenv = "^1.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+start = "gpt_dynamodb_action.main:main"
