@@ -17,23 +17,46 @@ DynamoDB 데이터베이스에 액세스하기 위한 OpenAPI 서버로, ChatGPT
 - Python 3.9+
 - Poetry
 - AWS 계정 및 DynamoDB 테이블
-- AWS 액세스 키 및 시크릿 키
+- AWS 자격 증명 설정 완료
 
 ### 환경 설정
 
-1. 의존성 설치:
+1. 저장소 클론하기:
+
+   ```bash
+   git clone https://github.com/yourusername/gpt_dynamodb_action.git
+   cd gpt_dynamodb_action
+   ```
+
+2. 의존성 설치:
 
    ```bash
    poetry install
    ```
 
-2. 환경 변수 설정 (.env 파일 생성):
-   ```
-   AWS_ACCESS_KEY_ID=your_access_key
-   AWS_SECRET_ACCESS_KEY=your_secret_key
-   AWS_REGION=ap-northeast-2
-   DYNAMO_TABLE_NAME=your_table_name
-   ```
+3. 환경 변수 설정:
+   - `.env.example` 파일을 `.env`로 복사:
+     ```bash
+     cp .env.example .env
+     ```
+   - `.env` 파일을 열어 필요한 값들을 설정:
+     ```ini
+     # AWS 자격 증명 설정
+     AWS_ACCESS_KEY_ID=your_access_key_id
+     AWS_SECRET_ACCESS_KEY=your_secret_access_key
+     AWS_REGION=ap-northeast-2
+
+     # DynamoDB 설정
+     DYNAMO_TABLE_NAME=your_table_name
+
+     # 서버 설정 (선택사항)
+     HOST=localhost
+     PORT=8000
+     DEBUG=False
+     ```
+
+   > **중요**: `.env` 파일은 민감한 정보를 포함하고 있으므로 절대로 깃허브에 커밋하지 마세요.
+   > AWS 자격 증명은 IAM 모범 사례에 따라 적절한 권한을 가진 사용자의 것을 사용하세요.
 
 ### 서버 실행
 
