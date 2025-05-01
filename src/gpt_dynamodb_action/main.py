@@ -8,7 +8,7 @@ app = FastAPI(
     version="1.0.0",
     servers=[
         {
-            "url": "https://9c89-221-140-91-16.ngrok-free.app",  # ⚠️ 여기에 실제 ngrok 주소 넣기
+            "url": "https://abc1234.ngrok-free.app",  # ⚠️ 여기에 실제 ngrok 주소 넣기
             "description": "Ngrok tunnel for local development"
         }
     ]
