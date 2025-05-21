@@ -1,124 +1,124 @@
 # GPT DynamoDB Action API
 
-DynamoDB 데이터베이스에 액세스하기 위한 OpenAPI 서버로, ChatGPT Actions와 함께 사용할 수 있습니다.
+An OpenAPI server for accessing DynamoDB databases, designed for use with ChatGPT Actions.
 
-## 기술 스택
+## Tech Stack
 
 - Python 3.9+
 - FastAPI
 - boto3 (AWS SDK)
-- Poetry (의존성 관리)
+- Poetry (dependency management)
 - AWS DynamoDB
 
-## 설치 및 실행
+## Installation & Run
 
-### 사전 요구사항
+### Prerequisites
 
 - Python 3.9+
 - Poetry
-- AWS 계정 및 DynamoDB 테이블
-- AWS 자격 증명 설정 완료
+- AWS account and DynamoDB table
+- AWS credentials configured
 
-### 환경 설정
+### Environment Setup
 
-1. 저장소 클론하기:
+1. Clone the repository:
 
    ```bash
    git clone https://github.com/yourusername/gpt_dynamodb_action.git
    cd gpt_dynamodb_action
    ```
 
-2. 의존성 설치:
+2. Install dependencies:
 
    ```bash
    poetry install
    ```
 
-3. 환경 변수 설정:
-   - `.env.example` 파일을 `.env`로 복사:
+3. Set environment variables:
+   - Copy `.env.example` to `.env`:
      ```bash
      cp .env.example .env
      ```
-   - `.env` 파일을 열어 필요한 값들을 설정:
+   - Open the `.env` file and set the required values:
      ```ini
-     # AWS 자격 증명 설정
+     # AWS credentials
      AWS_ACCESS_KEY_ID=your_access_key_id
      AWS_SECRET_ACCESS_KEY=your_secret_access_key
      AWS_REGION=ap-northeast-2
 
-     # DynamoDB 설정
+     # DynamoDB settings
      DYNAMO_TABLE_NAME=your_table_name
 
-     # 서버 설정 (선택사항)
+     # Server settings (optional)
      HOST=localhost
      PORT=8000
      DEBUG=False
      ```
 
-   > **중요**: `.env` 파일은 민감한 정보를 포함하고 있으므로 절대로 깃허브에 커밋하지 마세요.
-   > AWS 자격 증명은 IAM 모범 사례에 따라 적절한 권한을 가진 사용자의 것을 사용하세요.
+   > **Important**: Never commit the `.env` file to GitHub as it contains sensitive information.
+   > Use IAM best practices and only use credentials with the necessary permissions.
 
-### 서버 실행
+### Running the Server
 
-로컬에서 서버 실행:
+To run the server locally:
 
 ```bash
 poetry run python -m src.gpt_dynamodb_action.main
 ```
 
-서버는 기본적으로 `http://localhost:8000`에서 실행됩니다.
+By default, the server runs at `http://localhost:8000`.
 
-## Ngrok으로 로컬 서버 공개 접속 설정
+## Exposing Local Server with Ngrok
 
-1. [Ngrok 다운로드 및 설치](https://ngrok.com/download)
+1. [Download and install Ngrok](https://ngrok.com/download)
 
-2. Ngrok 인증:
+2. Authenticate Ngrok:
 
    ```bash
    ngrok config add-authtoken YOUR_NGROK_TOKEN
    ```
 
-3. 로컬 서버를 외부에 노출:
+3. Expose your local server:
 
    ```bash
    ngrok http 8000
    ```
 
-4. Ngrok이 제공하는 URL을 복사 (예: `https://abcd1234.ngrok-free.app`)
+4. Copy the URL provided by Ngrok (e.g., `https://abcd1234.ngrok-free.app`)
 
-5. `src/gpt_dynamodb_action/main.py` 파일에서 Ngrok URL 업데이트:
+5. Update the Ngrok URL in `src/gpt_dynamodb_action/main.py`:
    ```python
    app = FastAPI(
        title="GPT DynamoDB Scanner API",
        version="1.0.0",
        servers=[
            {
-               "url": "https://abcd1234.ngrok-free.app",  # 여기에 Ngrok URL 넣기
+               "url": "https://abcd1234.ngrok-free.app",  # Insert your Ngrok URL here
                "description": "Ngrok tunnel for local development"
            }
        ]
    )
    ```
 
-## ChatGPT Actions 추가 방법
+## Adding ChatGPT Actions
 
-1. [OpenAI 개발자 포털](https://platform.openai.com/apps)에 로그인
+1. Log in to the [OpenAI Developer Portal](https://platform.openai.com/apps)
 
-2. GPTs 섹션에서 액션을 추가할 GPT 생성 또는 선택
+2. In the GPTs section, create or select a GPT to add actions
 
-3. 구성(Configure) 탭에서 "Actions"로 이동
+3. Go to the Configure tab and select "Actions"
 
-4. "Add Action" 클릭 후 정보 입력:
+4. Click "Add Action" and fill in the details:
 
-   - Authentication: 필요에 따라 설정
-   - API 스키마: OpenAPI 스키마 URL 입력 (예: `https://abcd1234.ngrok-free.app/openapi.json`)
-   - 필요한 경우 특정 엔드포인트만 사용하도록 지정
+   - Authentication: Set as needed
+   - API Schema: Enter the OpenAPI schema URL (e.g., `https://abcd1234.ngrok-free.app/openapi.json`)
+   - Optionally, restrict to specific endpoints
 
-5. 저장 후 GPT에 액션 테스트
+5. Save and test the action in your GPT
 
-## API 사용 예시
+## API Usage Examples
 
-### 테이블 스캔
+### Scan Table
 
 ```bash
 curl -X POST "http://localhost:8000/scan_table" \
@@ -131,7 +131,7 @@ curl -X POST "http://localhost:8000/scan_table" \
   }'
 ```
 
-### 테이블 쿼리
+### Query Table
 
 ```bash
 curl -X POST "http://localhost:8000/query_table" \
@@ -153,7 +153,7 @@ curl -X POST "http://localhost:8000/query_table" \
   }'
 ```
 
-### 단일 항목 조회
+### Get Single Item
 
 ```bash
 curl -X POST "http://localhost:8000/get_item" \
@@ -165,33 +165,39 @@ curl -X POST "http://localhost:8000/get_item" \
   }'
 ```
 
-#### query_table 파라미터 설명
+#### query_table Parameter Description
 
-- `pk`: (필수) 파티션 키 값 (eq 연산만 지원)
-- `sk`: (선택) 정렬 키 값
-- `sk_operator`: (선택) 정렬 키 연산자 ("eq" 또는 "begins_with")
-- `filters`: (선택) 추가 필터 조건의 키-값 쌍
-- `filter_values`: (선택) 필터 조건의 연산자 지정
-- `limit`: (선택) 반환할 최대 항목 수 (기본값: 100)
-- `projection`: (선택) 반환할 속성 목록 (기본값: ["PK", "SK", "name", "createdAt"])
-- `last_evaluated_key`: (선택) 페이지네이션을 위한 마지막 평가 키
+- `pk`: (required) Partition key value (only "eq" operator supported)
+- `sk`: (optional) Sort key value
+- `sk_operator`: (optional) Sort key operator ("eq" or "begins_with")
+- `filters`: (optional) Additional filter key-value pairs
+- `filter_values`: (optional) Operators for filter conditions
+- `limit`: (optional) Maximum number of items to return (default: 100)
+- `projection`: (optional) List of attributes to return (default: ["PK", "SK", "name", "createdAt"])
+- `last_evaluated_key`: (optional) Last evaluated key for pagination
 
-#### get_item 파라미터 설명
+#### get_item Parameter Description
 
-- `pk`: (필수) 파티션 키 값
-- `sk`: (필수) 정렬 키 값
-- `projection`: (선택) 반환할 속성 목록 (기본값: ["PK", "SK", "name", "createdAt"])
+- `pk`: (required) Partition key value
+- `sk`: (required) Sort key value
+- `projection`: (optional) List of attributes to return (default: ["PK", "SK", "name", "createdAt"])
 
-## 데이터 조회 최적화 지침
+## Data Retrieval Optimization Guidelines
 
-DynamoDB의 특성을 고려한 효율적인 데이터 조회를 위해 다음 순서로 API를 사용하는 것을 권장합니다:
+For efficient data retrieval in DynamoDB, follow this recommended order:
 
-1. `scan_table`: 전체 테이블 스캔이 필요한 경우에만 사용 (비용이 많이 들고 성능이 저하될 수 있음)
-2. `query_table`: 파티션 키(PK)를 알고 있는 경우 사용. 정렬 키(SK)로 필터링 가능
-3. `get_item`: 정확한 PK와 SK 값을 알고 있는 경우 사용 (가장 효율적이고 비용 효과적)
+1. `scan_table`: Use only when a full table scan is necessary (can be costly and slow)
+2. `query_table`: Use when you know the partition key (PK); can filter with sort key (SK)
+3. `get_item`: Use when you know both the exact PK and SK (most efficient and cost-effective)
 
-이러한 순서로 데이터를 조회하도록 설계하면 DynamoDB의 성능을 최적화하고 비용을 절감할 수 있습니다.
+Following this order will help optimize DynamoDB performance and reduce costs.
 
-## 라이선스
+## License
 
 MIT
+
+---
+
+<a href="https://www.buymeacoffee.com/katpyeon" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="40" />
+</a>
